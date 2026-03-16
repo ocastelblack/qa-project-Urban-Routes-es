@@ -1,5 +1,3 @@
-# pages.py
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -123,8 +121,12 @@ class UrbanRoutesPage:
 
         add_btn.click()
 
+    def close_payment(self):
+
         close_btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.close_payment_modal)
+            EC.element_to_be_clickable(
+                (By.XPATH, "//div[contains(@class,'modal')]//button[contains(@class,'close-button')]")
+            )
         )
 
         close_btn.click()

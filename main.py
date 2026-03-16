@@ -87,6 +87,8 @@ class TestUrbanRoutes:
 
         routes_page.add_card(data.card_number, data.card_code)
 
+        routes_page.close_payment()
+
         payment_button = self.driver.find_element(By.CLASS_NAME, "pp-button")
 
         assert payment_button.is_displayed()
@@ -149,6 +151,8 @@ class TestUrbanRoutes:
         routes_page.open_payment_method()
 
         routes_page.add_card(data.card_number, data.card_code)
+
+        routes_page.close_payment()
 
         routes_page.write_message(data.message_for_driver)
 
