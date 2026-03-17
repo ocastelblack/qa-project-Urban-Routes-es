@@ -24,7 +24,7 @@ class UrbanRoutesPage:
     card_number_input = (By.ID, "number")
     card_code_input = (By.XPATH, "//input[@id='code' and @placeholder='12']")
     add_button = (By.XPATH, "//div[contains(@class,'section active')]//button[text()='Agregar']")
-    close_payment_modal = (By.CSS_SELECTOR, "button.close-button.section-close")
+    close_payment_modal = (By.XPATH, '//div[@class="close-button section-close"]')
 
     message_input = (By.ID, "comment")
 
@@ -40,6 +40,7 @@ class UrbanRoutesPage:
 
     order_taxi_button = (By.XPATH, "//button[text()='Pedir taxi']")
     request_taxi_button = (By.XPATH, "//button[text()='Pedir un taxi']")
+    driver_modal = (By.CLASS_NAME, "order-header-content")
 
     def __init__(self, driver):
         self.driver = driver
@@ -122,19 +123,17 @@ class UrbanRoutesPage:
         add_btn.click()
 
     def close_payment(self):
-
-        close_btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//div[contains(@class,'modal')]//button[contains(@class,'close-button')]")
-            )
-        )
-
-        close_btn.click()
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(self.close_payment_modal)
+        ).click()
 
     def write_message(self, message):
         self.driver.find_element(*self.message_input).send_keys(message)
 
     def add_blanket(self):
+        WebDriverWait(self.driver, 5).until(
+            EC.invisibility_of_element_located((By.CLASS_NAME, "overlay"))
+        )
         self.driver.find_element(*self.blanket_checkbox).click()
 
     def add_icecream(self):
@@ -143,3 +142,15 @@ class UrbanRoutesPage:
 
     def order_taxi(self):
         self.driver.find_element(*self.order_taxi_button).click()
+
+    def wait_for_driver(self):
+        from selenium.webdriver.support.wait import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+
+        WebDriverWait(self.driver, 60).until_not(
+            EC.text_to_be_present_in_element(self.driver_modal, "Buscar automóvil")
+        )
+
+
+    def is_driver_modal_displayed(self):
+        return self.driver.find_element(*self.driver_modal).is_displayed()
